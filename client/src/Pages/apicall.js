@@ -21,7 +21,7 @@ export const addproduct = async (data) => {
         const apiurl = myendpoints[3];
         const response = await axiosInstance.post(apiurl, data);
         console.log("Fetching add data...", response);
-        toast.success(response?.data?.message); 
+        toast.success(response?.data?.message);
         return response
     } catch (error) {
         console.log("Error fetching add data", error);
@@ -70,27 +70,13 @@ export const updateproduct = async ({ formdata, id }) => {
 // Delete Function 
 export const deleteproduct = async (id) => {
     try {
-        const apiurl = `${myendpoints[7]}/${id}` 
+        const apiurl = `${myendpoints[7]}/${id}`
         const response = await axiosInstance.delete(apiurl)
         console.log("Fetching Delete data...", response);
         toast.warn(response?.data?.message);
         return response
     } catch (error) {
         console.log("Error fetching Delete data...", error);
-    }
-} 
-
-// Forget Password 
-export const forgetpassword = async (data) => {
-    try {
-        const apiurl = myendpoints[6];
-        const response = await axiosInstance.post(apiurl, data);
-        console.log("Fetching forget data...", response);
-        toast.success(response?.data?.message);
-        return response
-    } catch (error) {
-        console.log("Error fetching forget data", error);
-        toast.error(error?.response?.data?.message);
     }
 }
 
@@ -109,15 +95,43 @@ export const updatepassword = async (data) => {
 }
 
 // Verify OTP 
-export const verifyotp = async(data) =>{
-    try{
+export const verifyotp = async (data) => {
+    try {
         const apiurl = myendpoints[8];
         const response = await axiosInstance.post(apiurl, data);
-        console.log("Fetching verify data...",response);
+        console.log("Fetching verify data...", response);
         toast.success(response?.data?.message);
         return response
     } catch (error) {
         console.log("Error fetching verify data", error);
         toast.error(error?.response?.data?.message);
+    }
+}
+
+// Reset link for forget password 
+export const resetpasswordlink = async (data) => {
+    try {
+        const apiurl = myendpoints[10];
+        const response = await axiosInstance.post(apiurl, data);
+        console.log("Fetching email verify data...", response);
+        toast.success(response?.data?.message);
+        return response
+    } catch (error) {
+        console.log("Error fetching email verify data", error);
+        toast.error(error?.response?.data?.message);
+    }
+}
+
+// Forget Password 
+export const forgetpassword = async (data, id, token) => {
+    try {
+        const apiurl = `${myendpoints[11]}/${id}/${token}`;
+        const response = await axiosInstance.post(apiurl, data);
+        console.log("Fetching forget data...", response);
+        toast.success(response?.data?.message);
+        return response
+    } catch (error) {
+        console.log("Error fetching forget data", error);
+        toast.error(error?.response?.data?.message); 
     }
 }

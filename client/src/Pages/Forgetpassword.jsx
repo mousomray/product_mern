@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Wrapper from '../Common/Wrapper';
 import { Link } from 'react-router-dom';
 import { forgetpassword } from './apicall';
@@ -19,6 +19,8 @@ import { useMutation } from '@tanstack/react-query';
 
 
 const Forgetpassword = () => {
+
+    const { id, token } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, watch, formState: { errors }, reset } = useForm(); // Define in State
@@ -28,15 +30,13 @@ const Forgetpassword = () => {
     const myforget = async (data) => {
 
         const myforgetdata = {
-            email: data.email,
-            userId: data.userId,
-            newPassword: data.newPassword,
-            confirmPassword: data.confirmPassword 
+            password: data.password,
+            confirmPassword: data.confirmPassword
         }
 
-        const response = await forgetpassword(myforgetdata)
+        const response = await forgetpassword(myforgetdata, id, token)
         console.log("My Forget response is ", response);
-        if (response && response?.data?.success === true) {
+        if (response && response?.data?.status === "success") {
             reset();
             navigate('/login');
             setLoading(false)
@@ -87,37 +87,10 @@ const Forgetpassword = () => {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="email"
-                                    label="Email"
-                                    {...register("email", {
-                                        required: "This field is required",
-                                        pattern: {
-                                            value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                            message: "Email Pattern should be xyz@gmail.com",
-                                        },
-                                    })}
-                                />
-                                {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="userId"
-                                    label="User Id"
-                                    {...register("userId")}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
                                     type="password"
-                                    id="newPassword"
-                                    label="New Password"
-                                    {...register("newPassword", {
+                                    id="password"
+                                    label="Password"
+                                    {...register("password", {
                                         required: "This field is Required",
                                         minLength: {
                                             value: 8,
@@ -125,8 +98,8 @@ const Forgetpassword = () => {
                                         }
                                     })}
                                 />
-                                {errors?.newPassword && (
-                                    <p style={{ color: 'red' }}>{errors.newPassword.message}</p>
+                                {errors?.password && (
+                                    <p style={{ color: 'red' }}>{errors.password.message}</p>
                                 )}
                             </Grid>
 
@@ -152,15 +125,6 @@ const Forgetpassword = () => {
                             {loading ? <CircularProgress color="inherit" /> : "Change"}
 
                         </Button>
-                        <Grid container style={{ display: "flex", justifyContent: "center" }}>
-                            <Grid item>
-                                <Link to="/login" variant="body2">
-                                    <button className='btn-primary'>Back</button>
-                                </Link>
-                            </Grid>
-
-                        </Grid>
-
                     </Box>
                 </Box>
             </Container>

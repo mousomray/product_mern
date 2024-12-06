@@ -156,7 +156,7 @@ const Login = () => {
                                 </Grid>
                                 <Grid container style={{ display: "flex", justifyContent: "center" }}>
                                     <Grid item>
-                                        <Link to="/forgetpassword" variant="body2">
+                                        <Link to="/emailverify" variant="body2">
                                             {"Forget Password"}
                                         </Link>
                                     </Grid>

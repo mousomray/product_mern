@@ -6,7 +6,9 @@ export const endpoints = {
         dashboard: "auth/dashboard",
         forget: "auth/forgetpassword",
         update: "auth/updatepassword",
-        verify: "auth/verifyotp"
+        verify: "auth/verifyotp",
+        resetlink: "auth/resetpasswordlink"
+
     },
 
     cms: {
@@ -29,5 +31,7 @@ export const myendpoints = [
     endpoints.cms.update, //Index number 6
     endpoints.cms.delete, //Index number 7
     endpoints.auth.verify, //Index number 8
-    endpoints.auth.update, //Index number 7
+    endpoints.auth.update, //Index number 9
+    endpoints.auth.resetlink, //Index number 10
+    endpoints.auth.forget //Index number 11
 ]

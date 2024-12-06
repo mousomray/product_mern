@@ -12,4 +12,4 @@ router.post('/updatepassword', Auth, authcontroller.updatePassword) // Update Pa
 router.post('/resetpasswordlink', authcontroller.resetpasswordlink)//Reset Password link
 router.post('/forgetpassword/:id/:token', authcontroller.forgetPassword)//Forget password
 
-module.exports = router
+module.exports = router  

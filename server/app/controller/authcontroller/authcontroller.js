@@ -254,10 +254,11 @@ class authcontroller {
                 from: process.env.EMAIL_FROM,
                 to: user.email,
                 subject: "Password Reset Link",
-                html: `<p>Hello ${user.name},</p><p>Please <a href="${resetLink}">Click here</a> to reset your password.</p>`
+                // html: `<p>Hello ${user.name},</p><p>Please <a href="${resetLink}">Click here</a> to reset your password.</p>`
+                html: `<p>Hello ${user.name},</p><p>Your email is verified now you can change your password</p>`
             });
             // Send success response
-            res.status(200).json({ status: true, message: "Password reset email sent. Please check your email." });
+            res.status(200).json({ status: true, message: "Your email is verified now you can change your password", user, token });
 
         } catch (error) {
             console.log(error);

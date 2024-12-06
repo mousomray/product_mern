@@ -17,6 +17,7 @@ import Updatepassword from './Pages/Updatepassword';
 import Addproduct from './Pages/Addproduct';
 import Editproduct from './Pages/Editproduct';
 import Verifyotp from './Pages/Verifyotp';
+import Emailverify from './Pages/Emailverify';
 
 
 const App = () => {
@@ -74,12 +75,16 @@ const App = () => {
       component: <Register />
     },
     {
-      path: '/forgetpassword',
+      path: '/forgetpassword/:id/:token',
       component: <Forgetpassword />
     },
     {
       path: '/verifyotp',
       component: <Verifyotp/>
+    },
+    {
+      path: '/emailverify',
+      component: <Emailverify/>
     }
 
   ]
