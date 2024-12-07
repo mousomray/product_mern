@@ -1,4 +1,5 @@
 const Product = require('../../model/product');
+const CartModel = require('../../model/cart');
 const path = require('path');
 const fs = require('fs');
 
@@ -175,6 +176,153 @@ class ProductController {
             res.status(500).json({ message: "Error deleting product" });
         }
     }
+
+    // Add cart
+    async addToCart(req, res) {
+        try {
+            const { userId, productId, quantity } = req.body;
+            if (!userId || !productId) {
+                return res.status(400).json({ message: 'User ID and Product ID are required' });
+            }
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+            let cart = await CartModel.findOne({ userId });
+            if (cart) {
+                // Check if the product is already in the cart
+                const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+                if (productIndex > -1) {
+                    // Update quantity
+                    cart.products[productIndex].quantity += quantity || 1;
+                } else {
+                    // Add new product to the cart
+                    cart.products.push({ productId, quantity: quantity || 1 });
+                }
+            } else {
+                // Create a new cart for the user
+                cart = new CartModel({
+                    userId,
+                    products: [{ productId, quantity: quantity || 1 }]
+                });
+            }
+            await cart.save();
+            res.status(200).json({ message: 'Cart item added', cart });
+        } catch (error) {
+            res.status(500).json({ message: 'Server Error', error: error.message });
+        }
+    }
+
+
+    // Get cart value 
+    async getcart(req, res) {
+        try {
+            const { userId } = req.params;
+            if (!userId) {
+                return res.status(400).json({ message: 'User ID is required' });
+            }
+    
+            // Find the user's cart
+            let cart = await CartModel.findOne({ userId }).populate('products.productId', 'p_name p_size p_color price image p_description brand');
+    
+            if (!cart) {
+                return res.status(404).json({ message: 'Cart not found' });
+            }
+    
+            // Filter out products with null references (deleted products)
+            cart.products = cart.products.filter(product => product.productId !== null);
+    
+            if (cart.products.length === 0) {
+                return res.status(404).json({ message: 'Cart is empty or contains only deleted products' });
+            }
+    
+            // Calculate total value for each product in the cart
+            const cartWithTotalValue = {
+                userId: cart.userId,
+                products: cart.products.map(product => {
+                    const totalprice = product.quantity * product.productId.price; // quantity * price
+                    return {
+                        productId: product.productId._id,
+                        name: product.productId.p_name,
+                        size: product.productId.p_size,
+                        color: product.productId.p_color,
+                        price: product.productId.price,
+                        image: product.productId.image,
+                        p_description: product.productId.p_description,
+                        brand: product.productId.brand,
+                        quantity: product.quantity,
+                        totalprice: totalprice, // Add the total value field
+                    };
+                }),
+            };
+    
+            res.status(200).json({
+                message: 'Cart retrieved successfully',
+                cart: cartWithTotalValue,
+            });
+        } catch (error) {
+            res.status(500).json({ message: 'Server Error', error: error.message });
+        }
+    }
+    
+
+
+    // Decrease cart
+    async decreaseCartItem(req, res) {
+        try {
+            const { userId, productId, quantity } = req.body;
+            if (!userId || !productId || quantity === undefined) {
+                return res.status(400).json({ message: 'User ID, Product ID, and quantity are required' });
+            }
+            // Check if the product exists
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+            // Check if the user already has a cart
+            let cart = await CartModel.findOne({ userId });
+            if (!cart) {
+                return res.status(404).json({ message: 'Cart not found for this user' });
+            }
+            // Check if the product is in the cart
+            const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+            if (productIndex === -1) {
+                return res.status(404).json({ message: 'Product not found in cart' });
+            }
+
+            // Decrease the quantity of the product in the cart
+            cart.products[productIndex].quantity -= quantity || 1;
+
+            // If the quantity becomes zero or less, remove the product from the cart
+            if (cart.products[productIndex].quantity <= 0) {
+                cart.products.splice(productIndex, 1);  // Remove the product from the cart
+            }
+
+            // Save the updated cart
+            await cart.save();
+
+            // Populate the cart to include full product details
+            const populatedCart = await CartModel.findById(cart._id).populate(
+                'products.productId', 'p_name p_size p_color price image p_description brand'
+            );
+
+            // Calculate the total price of the updated cart
+            let totalCartPrice = 0;
+            populatedCart.products.forEach(item => {
+                totalCartPrice += item.totalPrice;  // Add up the total price of each product
+            });
+
+            // Send the response
+            res.status(200).json({
+                message: 'Cart item remove',
+                cart: populatedCart,
+                totalCartPrice,  // Include the total price of the cart in the response
+            });
+        } catch (error) {
+            res.status(500).json({ message: 'Server Error', error: error.message });
+        }
+    }
+
 }
 
 module.exports = new ProductController();

@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../Auth/authslice';
 
-const pages = ['Home', 'Product'];
+const pages = ['Home', 'Product','Cart'];
 const settings = ['Dashboard', 'Update Password', 'Logout'];
 
 const Navbar = () => {

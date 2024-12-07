@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { productlist, deleteproduct } from './apicall';
+import { productlist, deleteproduct, addcart } from './apicall';
 import { useQuery } from '@tanstack/react-query';
 import Wrapper from '../Common/Wrapper';
 import Swal from 'sweetalert2'; // Import Sweet Alert 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
     Box,
@@ -46,6 +46,8 @@ const Sidebar = styled(Paper)(({ theme }) => ({
 }));
 
 const Product = () => {
+
+    const navigate = useNavigate();
     const [filters, setFilters] = useState({
         p_size: [],
         p_color: [],
@@ -111,8 +113,19 @@ const Product = () => {
     }
     // Make Handle For Delete (End)
 
+    const handleAddToCart = async (productId) => {
+        try {
+            const userId = localStorage.getItem("userid"); 
+            const data = { userId, productId };
+            await addcart(data); // Using the addcart function you defined earlier
+            navigate('/cart')
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     if (isLoading) {
-        return <h1 style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)'}}>Loading...</h1>;
+        return <h1 style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>Loading...</h1>;
     }
 
     if (isError) {
@@ -306,6 +319,13 @@ const Product = () => {
                                                     </Link>
                                                     <Button variant="contained" color="error" onClick={() => handleDelete(product._id)}>
                                                         Delete
+                                                    </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => handleAddToCart(product._id)}
+                                                    >
+                                                        Add to Cart
                                                     </Button>
                                                 </CardActions>
                                             </Card>

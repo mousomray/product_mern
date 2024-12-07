@@ -132,6 +132,45 @@ export const forgetpassword = async (data, id, token) => {
         return response
     } catch (error) {
         console.log("Error fetching forget data", error);
-        toast.error(error?.response?.data?.message); 
+        toast.error(error?.response?.data?.message);
     }
 }
+
+// Add to cart
+export const addcart = async (data) => {
+    try {
+        const apiurl = myendpoints[12];
+        const response = await axiosInstance.post(apiurl, data);
+        console.log("Fetching add cart data...", response);
+        toast.success(response?.data?.message);
+    } catch (error) {
+        console.log("Error fetching add data ", error);
+        toast.error(error?.response?.data?.message);
+    }
+}
+
+// Show cart
+export const showcart = async (userId) => {
+    try {
+        const apiurl = `${myendpoints[13]}/${userId}`;
+        const response = await axiosInstance.get(apiurl);
+        console.log("Fetching cart data...", response);
+        return response?.data?.cart?.products
+    } catch (error) {
+        console.log("Error fetching cart data ", error);
+    }
+}
+
+// Less to cart
+export const lesscart = async (data) => {
+    try {
+        const apiurl = myendpoints[14];
+        const response = await axiosInstance.put(apiurl, data);
+        console.log("Fetching less cart data...", response);
+        toast.warn(response?.data?.message);
+    } catch (error) {
+        console.log("Error fetching less cart data ", error);
+        toast.error(error?.response?.data?.message);
+    }
+}
+

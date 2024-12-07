@@ -18,6 +18,7 @@ import Addproduct from './Pages/Addproduct';
 import Editproduct from './Pages/Editproduct';
 import Verifyotp from './Pages/Verifyotp';
 import Emailverify from './Pages/Emailverify';
+import Cart from './Pages/Cart';
 
 
 const App = () => {
@@ -56,7 +57,11 @@ const App = () => {
     },
     {
       path: '/editproduct/:id',
-      component: <Editproduct/>
+      component: <Editproduct />
+    },
+    {
+      path: '/cart',
+      component: <Cart />
     },
     {
       path: '/updatepassword',
@@ -80,11 +85,11 @@ const App = () => {
     },
     {
       path: '/verifyotp',
-      component: <Verifyotp/>
+      component: <Verifyotp />
     },
     {
       path: '/emailverify',
-      component: <Emailverify/>
+      component: <Emailverify />
     }
 
   ]

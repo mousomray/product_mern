@@ -65,6 +65,7 @@ export const AuthSlice = createSlice({
 
         logout: (state, { payload }) => {
             localStorage.removeItem("token");
+            localStorage.removeItem("userid");
             localStorage.removeItem("name");
             localStorage.removeItem("image");
             toast.success("Logout successfully")
@@ -116,6 +117,7 @@ export const AuthSlice = createSlice({
                 console.log("My Login Payload...", payload);
                 if (payload.success === true) {
                     localStorage.setItem("token", payload?.token);
+                    localStorage.setItem("userid", payload?.data?._id);
                     localStorage.setItem("name", payload?.data?.name);
                     localStorage.setItem("image", payload?.data?.image);
                     state.Logouttoggle = true;

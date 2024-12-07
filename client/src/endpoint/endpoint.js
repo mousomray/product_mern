@@ -16,7 +16,10 @@ export const endpoints = {
         read: "api/productlist",
         single: "api/singleproduct",
         update: "api/editproduct",
-        delete: "api/delete"
+        delete: "api/delete",
+        addcart: "api/addcart",
+        cart: "api/cart",
+        lesscart: "api/decrease"
     },
 
 }
@@ -33,5 +36,8 @@ export const myendpoints = [
     endpoints.auth.verify, //Index number 8
     endpoints.auth.update, //Index number 9
     endpoints.auth.resetlink, //Index number 10
-    endpoints.auth.forget //Index number 11
+    endpoints.auth.forget, //Index number 11
+    endpoints.cms.addcart, //Index number 12
+    endpoints.cms.cart, //Index number 13
+    endpoints.cms.lesscart, //Index number 14
 ]
