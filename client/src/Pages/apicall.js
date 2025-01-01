@@ -47,7 +47,7 @@ export const singleproduct = async (id) => {
         const apiurl = `${myendpoints[5]}/${id}`
         const response = await axiosInstance.get(apiurl)
         console.log("Fetching Single product  data...", response);
-        return response?.data
+        return response?.data?.data
     } catch (error) {
         console.log("Error Fetching single product...", error);
 

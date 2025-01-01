@@ -49,45 +49,37 @@ const Editproduct = () => {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('');
 
-    // Single data fetch for image handling 
-    const getAmi = async () => {
-        const response = await singleproduct(id)
-        console.log("AMIIIIII", response);
-        return response?.data
-    }
-    const { data: amardata } = useQuery({
-        queryKey: ["amardata", id],
-        queryFn: getAmi
-    })
-
     // Get product For Single Value (Start)
     const getProduct = async () => {
         try {
             const response = await singleproduct(id);
-            console.log("kakaka", response);
+            console.log("Single response...", response);
 
-            const reg = {
-                p_name: response?.data?.p_name,
-                p_size: response?.data?.p_size,
-                p_color: response?.data?.p_color,
-                image: response?.data?.image,
-                brand: response?.data?.brand,
-                price: response?.data?.price,
-                p_description: response?.data?.p_description
+            const reg = { 
+                p_name: response?.p_name,
+                p_size: response?.p_size,
+                p_color: response?.p_color,
+                image: response?.image,
+                brand: response?.brand,
+                price: response?.price,
+                p_description: response?.p_description
             };
             reset(reg)
-            setSize(response?.data?.p_size)
-            setColor(response?.data?.p_color)
-
+            setSize(response?.p_size)
+            setColor(response?.p_color)
+            return response
         } catch (error) {
             console.log(error);
         }
     };
 
-    useQuery({ queryFn: getProduct, queryKey: ['singleproduct', id] }) // This line of code work as same as useEffect()
+    const { data: singledata } = useQuery({ queryFn: getProduct, queryKey: ['singleproduct', id] })
     // Get product For Single Value (End)
 
-    const onSubmit = async (data,e) => {
+    console.log("ami single...", singledata);
+
+
+    const onSubmit = async (data, e) => {
         e.preventDefault(); // For to stop default behavour
         setLoading(true);
         // Handling Form Data 
@@ -95,7 +87,7 @@ const Editproduct = () => {
         formdata.append("p_name", data.p_name);
         formdata.append("p_size", size);
         formdata.append("p_color", color);
-        formdata.append("image", image || amardata.image);
+        formdata.append("image", image || singledata.image);
         formdata.append("brand", data.brand);
         formdata.append("price", data.price);
         formdata.append("p_description", data.p_description);
@@ -250,7 +242,7 @@ const Editproduct = () => {
                                         ) : (
                                             <img
                                                 height="180px"
-                                                src={`http://localhost:3004/${amardata?.image}`}
+                                                src={`http://localhost:3004/${singledata?.image}`}
                                                 alt="Existing Employee"
                                                 className="upload-img"
                                             />
@@ -266,7 +258,7 @@ const Editproduct = () => {
                                         <Controller
                                             name="brand"
                                             control={control} // Use control from React Hook Form
-                                            defaultValue={amardata?.brand || ''} // Default brand value
+                                            defaultValue={singledata?.brand || ''} // Default brand value
                                             render={({ field }) => (
                                                 <Select
                                                     {...field}
